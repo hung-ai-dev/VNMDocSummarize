@@ -1,5 +1,7 @@
 from pyvi.pyvi import ViTokenizer as vnToken
 import summa.summarizer as summarizer
+import summa.keywords as keywords
+from summa.export import gexf_export
 import io
 import sys
 
@@ -15,10 +17,9 @@ cnt = 1
 for sentence in sentences:
     print('Sentence: ', cnt)
     print(sentence)
-    sentence = text_cleaner.split_words(sentence)
-    sentence = text_cleaner.remove_stopwords(sentence)
+    sentence = text_cleaner.clean_words(sentence)
     print(sentence)
     cnt += 1
 print('----------------------')
-print(summarizer.summarize(text))
+print(summarizer.summarize(text, words=50))
 print('----------------------')

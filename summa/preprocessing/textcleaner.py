@@ -185,12 +185,7 @@ def clean_text_by_sentences(text, language="vnm"):
     Returns a SyntacticUnit list. """
     # init_textcleanner(language)
     original_sentences = text_cleaner.split_sentences(text)
-    filtered_sentences = []
-
-    for sentence in original_sentences:
-        words = text_cleaner.split_words(sentence)
-        words = text_cleaner.remove_stopwords(words)
-        filtered_sentences.append(words)
+    filtered_sentences = [text_cleaner.clean_words(sentence) for sentence in original_sentences]
 
     return merge_syntactic_units(original_sentences, filtered_sentences)
 

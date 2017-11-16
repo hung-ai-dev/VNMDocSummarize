@@ -18,19 +18,20 @@ Examples
 
 Text summarization::
 
-    >>> text = """Automatic summarization is the process of reducing a text document with a
-    computer program in order to create a summary that retains the most important points
-    of the original document. As the problem of information overload has grown, and as
-    the quantity of data has increased, so has interest in automatic summarization.
-    Technologies that can make a coherent summary take into account variables such as
-    length, writing style and syntax. An example of the use of summarization technology
-    is search engines such as Google. Document summarization is another."""
+    >>> text = """CMC InfoSec cho hay, ngày hôm qua, 10/10/2017, Microsoft đã phát hành Patch Tuesday tháng 10 của mình, vá 62 lỗi bảo mật trong đó có 1 lỗi Zero-day nghiêm trọng (CVE-2017-11826).
+
+Lỗ hổng CVE-2017-11826 gây ra memory corruption (xung đột vùng nhớ) từ đó cho phép thực thi mã lệnh từ xa, tồn tại trong tất cả các bản Microsoft Office 2017, Word Automation Services và Microsoft Office Web Apps Server. Điều đáng lo ngại là lỗ hổng này đã bị khai thác.
+
+“Kẻ tấn công có thể thực hiện lây nhiễm đến các máy nạn nhân bằng phương thức Phishing (tấn công lừa đảo - PV), phát tán các file .docx và RTF có chứa mã độc. Khi đã lây nhiễm thành công vào máy nạn nhân, chúng đợi nạn nhân đăng nhập vào hệ thống để chiếm toàn bộ các quyền admin gồm cài đặt chương trình; xem, thay đổi, xóa dữ liệu hoặc tạo ra các tài khoản admin với các quyền kiểm soát hệ thống”, theo thông báo của Microsoft.
+
+Lỗ hổng CVE -2017 - 11826 đã được công ty bảo mật Qihoo 360 Core Security phát hiện và cảnh báo đến Microsoft vào khoảng trung tuần tháng 9/2017. Theo Qihoo 360 Core Security, lỗ hổng CVE - 2017 - 11826 đã bị tin tặc khai thác và thực hiện tấn công lên một nhóm người dùng nhất định. 
+
+Qua phân tích đảo chiều của mẫu máy chủ điều khiển, hãng Qihoo 360 Core Security cũng cho biết cuộc tấn công đã được chuẩn bị từ trước tháng 8/2017 và khởi động vào đầu tháng 9 vừa qua."""
 
     >>> from summa import summarizer
     >>> print summarizer.summarize(text)
-    'Automatic summarization is the process of reducing a text document with a computer
-    program in order to create a summary that retains the most important points of the
-    original document.'
+    'Lỗ hổng CVE -2017 - 11826 đã được công ty bảo mật Qihoo 360 Core Security phát hiện và cảnh báo đến Microsoft vào khoảng trung tuần tháng 9/2017.
+Theo Qihoo 360 Core Security, lỗ hổng CVE - 2017 - 11826 đã bị tin tặc khai thác và thực hiện tấn công lên một nhóm người dùng nhất định.'
 
 
 Keyword extraction::

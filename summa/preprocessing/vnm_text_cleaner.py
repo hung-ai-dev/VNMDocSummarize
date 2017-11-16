@@ -7,10 +7,9 @@ from pyvi.pyvi import ViTokenizer as viToken
 
 class VNM_TEXT_CLEANER():
     def __init__(self):
-        file = io.open('/media/hung/Data/NLP/textrank/summa/preprocessing/stop_word_list.txt', 'r')
+        file = io.open('/media/hung/Data/NLP/textrank/summa/preprocessing/stop_word_list.txt', 'r', encoding = 'utf-8')
         self.stop_word_list = file.read()
         
-
     def split_sentences(self, text):
         SEPARATOR = r"@"
         RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
@@ -33,8 +32,24 @@ class VNM_TEXT_CLEANER():
         
         return list(get_sentences(text))
 
-    def split_words(self, sentence):
-        return viToken.tokenize(sentence)
+    def clean_words(self, sentence):
+        def to_unicode(text, encoding='utf8', errors='strict'):
+            """Convert a string (bytestring in `encoding` or unicode), to unicode."""
+            if isinstance(text, str):
+                return text
+            return unicode(text, encoding, errors=errors)
 
-    def remove_stopwords(self, sentence):
-        return " ".join(w for w in sentence.split() if w not in self.stop_word_list)
+        RE_PUNCT = re.compile('([%s])+' % re.escape(string.punctuation), re.UNICODE)
+        def strip_punctuation(s):
+            s = to_unicode(s)
+            return RE_PUNCT.sub(" ", s)
+
+        def split_words(sentence):
+            return viToken.tokenize(sentence)
+
+        def remove_stopwords(s):
+            return "" if s in self.stop_word_list else s
+        
+        _sentence = split_words(sentence)
+        return " ".join(remove_stopwords(w) \
+                        for w in _sentence.split() if w not in self.stop_word_list)
