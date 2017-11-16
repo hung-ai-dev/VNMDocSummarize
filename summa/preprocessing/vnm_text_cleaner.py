@@ -38,11 +38,14 @@ class VNM_TEXT_CLEANER():
             if isinstance(text, str):
                 return text
             return unicode(text, encoding, errors=errors)
-
-        RE_PUNCT = re.compile('([%s])+' % re.escape(string.punctuation), re.UNICODE)
+        
+        punc = string.punctuation
+        punc = punc.replace('_', '')
+        RE_PUNCT = re.compile('([%s])+' % re.escape(punc), re.UNICODE)
         def strip_punctuation(s):
             s = to_unicode(s)
-            return RE_PUNCT.sub(" ", s)
+            return RE_PUNCT.sub("", s)
+
 
         def split_words(sentence):
             return viToken.tokenize(sentence)
@@ -50,6 +53,6 @@ class VNM_TEXT_CLEANER():
         def remove_stopwords(s):
             return "" if s in self.stop_word_list else s
         
-        _sentence = split_words(sentence)
-        return " ".join(remove_stopwords(w) \
-                        for w in _sentence.split() if w not in self.stop_word_list)
+        words = split_words(sentence)
+        return " ".join(strip_punctuation(remove_stopwords(w)) \
+                        for w in words.split() if w not in self.stop_word_list)
