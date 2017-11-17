@@ -15,7 +15,6 @@ except ImportError:
 
 from summa.preprocessing.snowball import SnowballStemmer
 from summa.preprocessing.stopwords import get_stopwords_by_language
-from summa.preprocessing.vnm_text_cleaner import VNM_TEXT_CLEANER
 from summa.syntactic_unit import SyntacticUnit
 
 SEPARATOR = r"@"
@@ -32,8 +31,6 @@ LANGUAGES = {"danish", "dutch", "english", "finnish", "french", "german", \
              "romanian", "russian", "spanish", "swedish"}
 STEMMER = None
 STOPWORDS = None
-
-text_cleaner = VNM_TEXT_CLEANER()
 
 def set_stemmer_language(language):
     global STEMMER
@@ -183,9 +180,9 @@ def merge_syntactic_units(original_units, filtered_units, tags=None):
 def clean_text_by_sentences(text, language="vnm"):
     """ Tokenizes a given text into sentences, applying filters and lemmatizing them.
     Returns a SyntacticUnit list. """
-    # init_textcleanner(language)
-    original_sentences = text_cleaner.split_sentences(text)
-    filtered_sentences = [text_cleaner.clean_words(sentence) for sentence in original_sentences]
+    init_textcleanner(language)
+    original_sentences = split_sentences(text)
+    filtered_sentences = [filter_words(sentence) for sentence in original_sentences]
 
     return merge_syntactic_units(original_sentences, filtered_sentences)
 

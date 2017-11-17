@@ -1,7 +1,7 @@
 
 from math import log10 as _log10
 from summa.pagerank_weighted import pagerank_weighted_scipy as _pagerank
-from summa.preprocessing.textcleaner import clean_text_by_sentences as _clean_text_by_sentences
+from summa.preprocessing import vnm_text_cleaner as vnm
 from summa.commons import build_graph as _build_graph
 from summa.commons import remove_unreachable_nodes as _remove_unreachable_nodes
 
@@ -90,7 +90,7 @@ def _extract_most_important_sentences(sentences, ratio, words):
 
 def summarize(text, ratio=0.2, words=None, language="vnm", split=False, scores=False):
     # Gets a list of processed sentences.
-    sentences = _clean_text_by_sentences(text, language)
+    sentences = vnm._clean_text_by_sentences(text, language)
 
     # Creates the graph and calculates the similarity coefficient for every pair of nodes.
     graph = _build_graph([sentence.token for sentence in sentences])

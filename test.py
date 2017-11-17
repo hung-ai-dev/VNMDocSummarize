@@ -21,5 +21,5 @@ for sentence in sentences:
     print(sentence)
     cnt += 1
 print('----------------------')
-print(summarizer.summarize(text, words=50))
+print(summarizer.summarize(text, ratio=0.2))
 print('----------------------')

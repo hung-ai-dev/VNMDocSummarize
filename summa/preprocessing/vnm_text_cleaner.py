@@ -4,6 +4,7 @@ import logging
 import re
 import io
 from pyvi.pyvi import ViTokenizer as viToken
+from summa.syntactic_unit import SyntacticUnit
 
 class VNM_TEXT_CLEANER():
     def __init__(self):
@@ -11,21 +12,8 @@ class VNM_TEXT_CLEANER():
         self.stop_word_list = file.read()
         
     def split_sentences(self, text):
-        SEPARATOR = r"@"
         RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
-        UNDO_AB_SENIOR = re.compile("([A-Z][a-z]{1,2}\.)" + SEPARATOR + "(\w)")
-        UNDO_AB_ACRONYM = re.compile("(\.[a-zA-Z]\.)" + SEPARATOR + "(\w)")
-
-        def undo_replacement(sentence):
-            return replace_with_separator(sentence, r" ", [UNDO_AB_SENIOR, UNDO_AB_ACRONYM])
-
-        def replace_with_separator(text, separator, regexs):
-            replacement = r"\1" + separator + r"\2"
-            result = text
-            for regex in regexs:
-                result = regex.sub(replacement, result)
-            return result
-
+        
         def get_sentences(text):
             for match in RE_SENTENCE.finditer(text):
                 yield match.group()
@@ -56,3 +44,26 @@ class VNM_TEXT_CLEANER():
         words = split_words(sentence)
         return " ".join(strip_punctuation(remove_stopwords(w)) \
                         for w in words.split() if w not in self.stop_word_list)
+    
+    def merge_syntactic_units(self, original_units, filtered_units, tags=None):
+        units = []
+        for i in range(len(original_units)):
+            if filtered_units[i] == '':
+                continue
+
+            text = original_units[i]
+            token = filtered_units[i]
+            tag = tags[i][1] if tags else None
+            sentence = SyntacticUnit(text, token, tag)
+            sentence.index = i
+
+            units.append(sentence)
+
+        return units
+
+
+def _clean_text_by_sentences(text, language):
+    text_cleaner = VNM_TEXT_CLEANER()
+    original_sentences = text_cleaner.split_sentences(text)
+    filtered_sentences = [text_cleaner.clean_words(sentence) for sentence in original_sentences]
+    return text_cleaner.merge_syntactic_units(original_sentences, filtered_sentences)
