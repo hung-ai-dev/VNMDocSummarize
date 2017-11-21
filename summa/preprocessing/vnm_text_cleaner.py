@@ -17,7 +17,7 @@ class VNM_TEXT_CLEANER():
         def get_sentences(text):
             for match in RE_SENTENCE.finditer(text):
                 yield match.group()
-        
+
         return list(get_sentences(text))
 
     def clean_words(self, sentence):
@@ -34,7 +34,6 @@ class VNM_TEXT_CLEANER():
             s = to_unicode(s)
             return RE_PUNCT.sub("", s)
 
-
         def split_words(sentence):
             return viToken.tokenize(sentence)
 
@@ -43,7 +42,7 @@ class VNM_TEXT_CLEANER():
         
         words = split_words(sentence)
         return " ".join(strip_punctuation(remove_stopwords(w)) \
-                        for w in words.split() if w not in self.stop_word_list)
+                        for w in words.split() if w not in self.stop_word_list).strip()
     
     def merge_syntactic_units(self, original_units, filtered_units, tags=None):
         units = []

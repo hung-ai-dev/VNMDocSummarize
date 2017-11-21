@@ -8,7 +8,6 @@ from summa.keywords import keywords
 SENTENCE = 0
 WORD = 1
 
-
 def get_arguments():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "t:s:r:w:h", ["text=", "summary=", "ratio=", "words=", "help"])

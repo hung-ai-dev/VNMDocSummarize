@@ -1,13 +1,16 @@
-
 from summa.graph import Graph
-
 
 def build_graph(sequence):
     graph = Graph()
+    document = []
     for item in sequence:
+        item = item.strip()
+        if item is None or len(item) == 0:
+            continue
         if not graph.has_node(item):
             graph.add_node(item)
-    return graph
+            document.append(item)
+    return graph, document
 
 
 def remove_unreachable_nodes(graph):

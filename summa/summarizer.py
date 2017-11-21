@@ -1,21 +1,32 @@
-
+from collections import OrderedDict
+from operator import itemgetter
 from math import log10 as _log10
 from summa.pagerank_weighted import pagerank_weighted_scipy as _pagerank
 from summa.preprocessing import vnm_text_cleaner as vnm
 from summa.commons import build_graph as _build_graph
 from summa.commons import remove_unreachable_nodes as _remove_unreachable_nodes
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
+def _set_graph_edge_weights(graph, document):
+    tfidf_vecrorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vecrorizer.fit_transform(document)
+    similarity = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-def _set_graph_edge_weights(graph):
+    
     for sentence_1 in graph.nodes():
-        for sentence_2 in graph.nodes():
+        idx_1 = document.index(sentence_1)
 
+        for sentence_2 in graph.nodes():
+            idx_2 = document.index(sentence_2)
             edge = (sentence_1, sentence_2)
             if sentence_1 != sentence_2 and not graph.has_edge(edge):
-                similarity = _get_similarity(sentence_1, sentence_2)
-                if similarity != 0:
-                    graph.add_edge(edge, similarity)
-
+                similarity_score = similarity[idx_1][idx_2]
+                # similarity_score = _get_similarity(sentence_1, sentence_2)
+                if abs(similarity_score) > 0.1:
+                    graph.add_edge(edge, similarity_score)
+            idx_2 += 1
+        idx_1 += 1
 
 def _get_similarity(s1, s2):
     words_sentence_one = s1.split()
@@ -93,8 +104,17 @@ def summarize(text, ratio=0.2, words=None, language="vnm", split=False, scores=F
     sentences = vnm._clean_text_by_sentences(text, language)
 
     # Creates the graph and calculates the similarity coefficient for every pair of nodes.
-    graph = _build_graph([sentence.token for sentence in sentences])
-    _set_graph_edge_weights(graph)
+    graph, document = _build_graph([sentence.token for sentence in sentences])
+
+    # edge = {}
+    # for i in graph.nodes():
+    #     for j in graph.neighbors(i):
+    #         edge[(i, j)] = graph.edge_weight((i, j))
+    # edge = OrderedDict(sorted(edge.items(), key=itemgetter(1)))
+    # for e_ in edge.items():
+    #     print(e_)
+
+    _set_graph_edge_weights(graph, document)
 
     # Remove all nodes with all edges weights equal to zero.
     _remove_unreachable_nodes(graph)
