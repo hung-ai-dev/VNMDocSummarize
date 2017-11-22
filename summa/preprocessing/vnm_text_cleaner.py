@@ -26,7 +26,7 @@ class VNM_TEXT_CLEANER():
             if isinstance(text, str):
                 return text
             return unicode(text, encoding, errors=errors)
-        
+        sentence = sentence.lower()
         punc = string.punctuation
         punc = punc.replace('_', '')
         RE_PUNCT = re.compile('([%s])+' % re.escape(punc), re.UNICODE)

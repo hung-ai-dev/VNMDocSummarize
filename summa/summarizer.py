@@ -12,7 +12,6 @@ def _set_graph_edge_weights(graph, document):
     tfidf_vecrorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vecrorizer.fit_transform(document)
     similarity = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
     
     for sentence_1 in graph.nodes():
         idx_1 = document.index(sentence_1)
@@ -25,8 +24,6 @@ def _set_graph_edge_weights(graph, document):
                 # similarity_score = _get_similarity(sentence_1, sentence_2)
                 if abs(similarity_score) > 0.1:
                     graph.add_edge(edge, similarity_score)
-            idx_2 += 1
-        idx_1 += 1
 
 def _get_similarity(s1, s2):
     words_sentence_one = s1.split()
@@ -102,7 +99,7 @@ def _extract_most_important_sentences(sentences, ratio, words):
 def summarize(text, ratio=0.2, words=None, language="vnm", split=False, scores=False):
     # Gets a list of processed sentences.
     sentences = vnm._clean_text_by_sentences(text, language)
-
+    
     # Creates the graph and calculates the similarity coefficient for every pair of nodes.
     graph, document = _build_graph([sentence.token for sentence in sentences])
 

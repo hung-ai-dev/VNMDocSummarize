@@ -26,7 +26,7 @@ def pagerank_weighted(graph, initial_value=None, damping=0.85):
             for j in graph.neighbors(i):
                 neighbors_sum = sum(graph.edge_weight((j, k)) for k in graph.neighbors(j))
                 rank += damping * scores[j] * graph.edge_weight((j, i)) / neighbors_sum
-
+            
             if abs(scores[i] - rank) <= CONVERGENCE_THRESHOLD:
                 convergence_achieved += 1
 
@@ -36,7 +36,6 @@ def pagerank_weighted(graph, initial_value=None, damping=0.85):
             break
 
     return scores
-
 
 def pagerank_weighted_scipy(graph, damping=0.85):
     adjacency_matrix = build_adjacency_matrix(graph)
