@@ -87,6 +87,10 @@ def _extract_most_important_sentences(sentences, ratio, words):
 
     # If no "words" option is selected, the number of sentences is
     # reduced by the provided ratio.
+
+    # if number_of_sentences:
+    #     return sentences[:number_of_sentences]
+    
     if words is None:
         length = len(sentences) * ratio
         return sentences[:int(length)]
@@ -96,8 +100,9 @@ def _extract_most_important_sentences(sentences, ratio, words):
         return _get_sentences_with_word_count(sentences, words)
 
 
-def summarize(text, ratio=0.2, words=None, language="vnm", split=False, scores=False):
+def summarize(text, ratio=0.2, words=None, number_of_sentences = None, language="vnm", split=False, scores=False):
     # Gets a list of processed sentences.
+    text = text.replace('\n', ' ')
     sentences = vnm._clean_text_by_sentences(text, language)
     
     # Creates the graph and calculates the similarity coefficient for every pair of nodes.
@@ -131,6 +136,9 @@ def summarize(text, ratio=0.2, words=None, language="vnm", split=False, scores=F
 
     # Sorts the extracted sentences by apparition order in the original text.
     extracted_sentences.sort(key=lambda s: s.index)
+
+    if number_of_sentences:
+        extracted_sentences = extracted_sentences[:number_of_sentences]
 
     return _format_results(extracted_sentences, split, scores)
 

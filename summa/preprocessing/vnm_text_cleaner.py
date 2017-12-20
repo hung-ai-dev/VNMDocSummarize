@@ -12,7 +12,7 @@ class VNM_TEXT_CLEANER():
         self.stop_word_list = file.read()
         
     def split_sentences(self, text):
-        RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
+        RE_SENTENCE = re.compile('(\S.+?[;.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
         
         def get_sentences(text):
             for match in RE_SENTENCE.finditer(text):
