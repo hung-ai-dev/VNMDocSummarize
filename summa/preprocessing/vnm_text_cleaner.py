@@ -7,6 +7,21 @@ from pyvi.pyvi import ViTokenizer as viToken
 from summa.syntactic_unit import SyntacticUnit
 import re
 
+
+def to_unicode(text, encoding='utf8', errors='strict'):
+    """Convert a string (bytestring in `encoding` or unicode), to unicode."""
+    if isinstance(text, str):
+        return text
+    return unicode(text, encoding, errors=errors)
+
+punc = string.punctuation
+punc = punc.replace('_', '')
+punc = punc.replace('/', '')
+RE_PUNCT = re.compile('([%s])+' % re.escape(punc), re.UNICODE)
+def strip_punctuation(s):
+    s = to_unicode(s)
+    return RE_PUNCT.sub("", s)
+
 class VNM_TEXT_CLEANER():
     def __init__(self):
         file = io.open('/media/hung/Data/NLP/textrank/summa/preprocessing/stop_word_list.txt', 'r', encoding = 'utf-8')
@@ -15,6 +30,7 @@ class VNM_TEXT_CLEANER():
     def split_sentences(self, text):
         text = re.sub(r'--+', '', text)
         text = re.sub(r'  +', ' ', text)
+        text = strip_punctuation(text)
 
         RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
         
@@ -33,25 +49,13 @@ class VNM_TEXT_CLEANER():
         return sentences
 
     def clean_words(self, sentence):
-        def to_unicode(text, encoding='utf8', errors='strict'):
-            """Convert a string (bytestring in `encoding` or unicode), to unicode."""
-            if isinstance(text, str):
-                return text
-            return unicode(text, encoding, errors=errors)
-        sentence = sentence.lower()
-        punc = string.punctuation
-        punc = punc.replace('_', '')
-        RE_PUNCT = re.compile('([%s])+' % re.escape(punc), re.UNICODE)
-        def strip_punctuation(s):
-            s = to_unicode(s)
-            return RE_PUNCT.sub("", s)
-
         def split_words(sentence):
             return viToken.tokenize(sentence)
 
         def remove_stopwords(s):
             return "" if s in self.stop_word_list else s
         
+        sentence = sentence.lower()
         words = split_words(sentence)
         return " ".join(strip_punctuation(remove_stopwords(w)) \
                         for w in words.split() if w not in self.stop_word_list).strip()
