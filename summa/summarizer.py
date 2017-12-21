@@ -7,6 +7,7 @@ from summa.commons import build_graph as _build_graph
 from summa.commons import remove_unreachable_nodes as _remove_unreachable_nodes
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import re
 
 def _set_graph_edge_weights(graph, document):
     tfidf_vecrorizer = TfidfVectorizer()
@@ -102,7 +103,6 @@ def _extract_most_important_sentences(sentences, ratio, words):
 
 def summarize(text, ratio=0.2, words=None, number_of_sentences = None, language="vnm", split=False, scores=False):
     # Gets a list of processed sentences.
-    text = text.replace('\n', ' ')
     sentences = vnm._clean_text_by_sentences(text, language)
     
     # Creates the graph and calculates the similarity coefficient for every pair of nodes.

@@ -5,6 +5,7 @@ import re
 import io
 from pyvi.pyvi import ViTokenizer as viToken
 from summa.syntactic_unit import SyntacticUnit
+import re
 
 class VNM_TEXT_CLEANER():
     def __init__(self):
@@ -12,13 +13,24 @@ class VNM_TEXT_CLEANER():
         self.stop_word_list = file.read()
         
     def split_sentences(self, text):
-        RE_SENTENCE = re.compile('(\S.+?[;.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
+        text = re.sub(r'--+', '', text)
+        text = re.sub(r'  +', ' ', text)
+
+        RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
         
         def get_sentences(text):
             for match in RE_SENTENCE.finditer(text):
                 yield match.group()
 
-        return list(get_sentences(text))
+        draft_sentences = list(get_sentences(text))
+        sentences = []
+        for sent in draft_sentences:
+            sent = sent.strip()
+            if not sent[0].isupper():
+                sentences[-1] += ' ' + sent
+            else:
+                sentences.append(sent)
+        return sentences
 
     def clean_words(self, sentence):
         def to_unicode(text, encoding='utf8', errors='strict'):
@@ -62,6 +74,8 @@ class VNM_TEXT_CLEANER():
 
 
 def _clean_text_by_sentences(text, language):
+    # text = text.replace('\n', ' ')
+
     text_cleaner = VNM_TEXT_CLEANER()
     original_sentences = text_cleaner.split_sentences(text)
     filtered_sentences = [text_cleaner.clean_words(sentence) for sentence in original_sentences]
