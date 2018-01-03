@@ -16,14 +16,14 @@ text_cleaner = vnm_text_cleaner.VNM_TEXT_CLEANER()
 sentences = text_cleaner.split_sentences(text)
 cnt = 1
 for sentence in sentences:
-    print('Sentence: ', cnt)
+    print('-----Sentence: ', cnt)
     print(sentence)
     sentence = text_cleaner.clean_words(sentence)
     print(sentence)
     cnt += 1
 print('----------------------')
 
-sum = summarizer.summarize(text, ratio=0.2, number_of_sentences = 2)
+sum = summarizer.summarize(text, ratio=0.2, number_of_sentences = 1)
 print('----------------------')
 print(sum)
 print('-------------')

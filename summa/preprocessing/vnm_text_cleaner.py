@@ -4,6 +4,7 @@ import logging
 import re
 import io
 from pyvi.pyvi import ViTokenizer as viToken
+from pyvi.pyvi import ViPosTagger as viPosTag
 from summa.syntactic_unit import SyntacticUnit
 import re
 
@@ -14,6 +15,7 @@ def to_unicode(text, encoding='utf8', errors='strict'):
         return text
     return unicode(text, encoding, errors=errors)
 
+eos = ['E']
 punc = string.punctuation
 punc = punc.replace('_', '')
 punc = punc.replace('/', '')
@@ -21,6 +23,9 @@ RE_PUNCT = re.compile('([%s])+' % re.escape(punc), re.UNICODE)
 def strip_punctuation(s):
     s = to_unicode(s)
     return RE_PUNCT.sub("", s)
+
+
+order_list = [ch + ')' for ch in string.ascii_lowercase]
 
 class VNM_TEXT_CLEANER():
     def __init__(self):
@@ -30,7 +35,6 @@ class VNM_TEXT_CLEANER():
     def split_sentences(self, text):
         text = re.sub(r'--+', '', text)
         text = re.sub(r'  +', ' ', text)
-        text = strip_punctuation(text)
 
         RE_SENTENCE = re.compile('(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)')
         
@@ -40,12 +44,29 @@ class VNM_TEXT_CLEANER():
 
         draft_sentences = list(get_sentences(text))
         sentences = []
+        # print('ORDER LIST', order_list)
         for sent in draft_sentences:
+            # print('Sent', sent)
             sent = sent.strip()
-            if not sent[0].isupper():
-                sentences[-1] += ' ' + sent
-            else:
+
+            if len(sentences) == 0:
+                sentences.append(sent)                
+
+            if len(sentences) > 0 and sentences[-1][-1] in punc:
                 sentences.append(sent)
+                continue
+            
+            token = viToken.tokenize(sentences[-1])
+            pos = viPosTag.postagging(token)
+
+            print('SENT', sent)
+            print(pos[0][-1], pos[1][-1])
+            if (sent[0].isupper() or sent[0].isdigit() or sent[:2] in order_list or sent[0] in punc):
+                    # and (pos[1][-1] in eos):
+                sentences.append(sent)
+            else:
+                sentences[-1] += ' ' + sent
+                
         return sentences
 
     def clean_words(self, sentence):
@@ -56,6 +77,7 @@ class VNM_TEXT_CLEANER():
             return "" if s in self.stop_word_list else s
         
         sentence = sentence.lower()
+        sentence = strip_punctuation(sentence)
         words = split_words(sentence)
         return " ".join(strip_punctuation(remove_stopwords(w)) \
                         for w in words.split() if w not in self.stop_word_list).strip()
