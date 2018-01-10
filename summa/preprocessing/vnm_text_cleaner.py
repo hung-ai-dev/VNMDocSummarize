@@ -59,8 +59,8 @@ class VNM_TEXT_CLEANER():
             token = viToken.tokenize(sentences[-1])
             pos = viPosTag.postagging(token)
 
-            print('SENT', sent)
-            print(pos[0][-1], pos[1][-1])
+            # print('SENT', sent)
+            # print(pos[0][-1], pos[1][-1])
             if (sent[0].isupper() or sent[0].isdigit() or sent[:2] in order_list or sent[0] in punc):
                     # and (pos[1][-1] in eos):
                 sentences.append(sent)

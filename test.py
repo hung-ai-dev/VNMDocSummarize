@@ -14,6 +14,7 @@ text = f.read()
 text_cleaner = vnm_text_cleaner.VNM_TEXT_CLEANER()
 
 sentences = text_cleaner.split_sentences(text)
+print(text_cleaner.clean_words(text))
 cnt = 1
 for sentence in sentences:
     print('-----Sentence: ', cnt)
